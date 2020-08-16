@@ -32,6 +32,9 @@ module.exports = appInfo => {
         url:'mongodb://127.0.0.1:27017/kkbhub',
         options:{}
       }
+    },
+    jwt:{
+      secret:'123456'
     }
   };
 };
