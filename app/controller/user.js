@@ -14,13 +14,17 @@ class UserController extends BaseController{
     async login(){
         //this.success('token')
         const {ctx, app} = this
-        const {email, captcha, passwd} = ctx.request.body
+        const {email, captcha, passwd, emailcode} = ctx.request.body
         //if(captcha.toUpperCase() !== ctx.session.captcha.toUpperCase()){
         if(false){
             return this.error('verify code error')
         }
 
-        console.log(1123132,passwd,md5(passwd*HashSalt))
+        //if(emailcode !== ctx.session.emailcode){
+        if(false){
+                return this.error('verify email code error')
+        }
+
         const user = await ctx.model.User.findOne({
             email,
             passwd:md5(passwd+HashSalt)
@@ -33,7 +37,7 @@ class UserController extends BaseController{
         const token = jwt.sign({
             _id: user._id,
             email,
-        },app.config.jwt.secret,{expiresIn:'1h'})
+        },app.config.jwt.secret,{expiresIn:'5m'})
 
         this.success({token,email,nickname:user.nickname})
     }
@@ -84,7 +88,8 @@ class UserController extends BaseController{
     }
 
     async info(){
-
+        const {ctx}  = this
+        //const {email} = 
     }
 }
 
