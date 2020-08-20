@@ -37,7 +37,7 @@ class UserController extends BaseController{
         const token = jwt.sign({
             _id: user._id,
             email,
-        },app.config.jwt.secret,{expiresIn:'5m'})
+        },app.config.jwt.secret,{expiresIn:'1h'})
 
         this.success({token,email,nickname:user.nickname})
     }
@@ -89,7 +89,10 @@ class UserController extends BaseController{
 
     async info(){
         const {ctx}  = this
-        //const {email} = 
+        const {email} = ctx.state
+        const user = await this.checkEmail(email)
+
+        this.success(user)
     }
 }
 

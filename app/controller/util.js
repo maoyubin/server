@@ -1,6 +1,8 @@
 const svgCaptcha = require('svg-captcha');
 const { consoleLevel } = require('egg-mock');
 const BaseController = require('./base')
+const fse = require('fs-extra')
+
 class UtilController extends BaseController {
   async captcha() {
       const captcha = svgCaptcha.create(
@@ -38,6 +40,26 @@ class UtilController extends BaseController {
       this.error('send email error !!!')
     }
   }
+
+  async uploadfile(){
+    const {ctx} = this
+    const file = ctx.request.files[0]
+    const {name} = ctx.request.body
+
+    console.log('file.filepath==>',file.filepath)
+    await fse.move(file.filepath, this.config.UPLOAD_DIR+"/"+file.filename)
+
+
+    this.success(
+      {
+        url:`/public/${file.filename}`
+      }
+    )
+
+  }
 }
+
+
+
 
 module.exports = UtilController;

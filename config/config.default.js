@@ -1,7 +1,7 @@
 /* eslint valid-jsdoc: "off" */
 
 'use strict';
-
+const path = require('path')
 /**
  * @param {Egg.EggAppInfo} appInfo app info
  */
@@ -17,6 +17,13 @@ module.exports = appInfo => {
 
   // add your middleware config here
   config.middleware = [];
+
+  config.multipart ={
+    mode: 'file',
+    whitelist: () =>true
+  }
+
+  config.UPLOAD_DIR = path.resolve(__dirname,'..','app/public')
 
   // add your user config here
   const userConfig = {
