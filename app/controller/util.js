@@ -2,7 +2,7 @@ const svgCaptcha = require('svg-captcha');
 const { consoleLevel } = require('egg-mock');
 const BaseController = require('./base')
 const fse = require('fs-extra')
-
+const path = require('path')
 class UtilController extends BaseController {
   async captcha() {
       const captcha = svgCaptcha.create(
@@ -19,6 +19,16 @@ class UtilController extends BaseController {
       this.ctx.response.type='image/svg+xml'
       this.ctx.body = captcha.data
 
+  }
+
+  async mergefile(){
+    const {ext, size, hash} = this.ctx.request.body
+    const filePath = path.resolve(this.config.UPLOAD_DIR, `${hash}.${ext}`)
+
+    await this.ctx.service.tools.mergeFile(filePath, hash, size)
+    this.success({
+      url:`/public/${hash}.${ext}`
+    })
   }
 
   async sendcode(){
@@ -44,17 +54,23 @@ class UtilController extends BaseController {
   async uploadfile(){
     const {ctx} = this
     const file = ctx.request.files[0]
-    const {name} = ctx.request.body
+    const {name, hash} = ctx.request.body
 
-    console.log('file.filepath==>',file.filepath)
-    await fse.move(file.filepath, this.config.UPLOAD_DIR+"/"+file.filename)
+    const chunkPath = path.resolve(this.config.UPLOAD_DIR, hash)
+    //const filePath = path.resolve(this.config.UPLOAD_DIR, hash)
+
+    if(!fse.existsSync(chunkPath)){
+      await fse.mkdir(chunkPath)
+    }
+    await fse.move(file.filepath, `${chunkPath}/${name}`)
 
 
-    this.success(
-      {
-        url:`/public/${file.filename}`
-      }
-    )
+    this.message('upload success')
+    //   {
+    //     me
+    //     url:`/public/${file.filename}`
+    //   }
+    // )
 
   }
 }
