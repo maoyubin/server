@@ -76,6 +76,11 @@ class UtilController extends BaseController {
   }
 
   async uploadfile(){
+    if(Math.random()>0.3){
+      //retry while failing
+      return this.ctx.status = 500
+    }
+
     const {ctx} = this
     const file = ctx.request.files[0]
     const {name, hash} = ctx.request.body
