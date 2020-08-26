@@ -31,6 +31,30 @@ class UtilController extends BaseController {
     })
   }
 
+  async checkfile(){
+    const {ctx} = this
+    const {ext, hash} = ctx.request.body
+    const filePath = path.resolve(this.config.UPLOAD_DIR, `${hash}.${ext}`)
+
+    let uploaded = false
+    let uploadedList = []
+
+    if(fse.existsSync(filePath)){
+      uploaded = true
+    }else{
+      uploadedList = await this.getUploadedList(path.resolve(this.config.UPLOAD_DIR, hash))
+    }
+    this.success({
+      uploaded, uploadedList
+    })
+
+  }
+
+  async getUploadedList(dirPath){
+    return fse.existsSync(dirPath)
+          ? (await (await fse.readdir(dirPath)).filter(name=>name[0]!=='.')):[]
+  }
+
   async sendcode(){
     const {ctx} = this
     const email = ctx.query.email

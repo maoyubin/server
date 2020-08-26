@@ -20,7 +20,7 @@ class ToolService extends Service {
 
         let chunks = await fse.readdir(chunkDir)
 
-        console.log('bbbbbbbbbbbbbbbbb',chunks)
+        //console.log('bbbbbbbbbbbbbbbbb',chunks)
 
 
         chunks.sort((a, b)=>a.split('-')[1]-b.split('-')[1])
